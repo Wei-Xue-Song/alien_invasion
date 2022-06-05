@@ -5,9 +5,9 @@ from pygame.sprite import Sprite
 class Bullet(Sprite):
     """管理飞船所发射子弹的类"""
 
-    def __init__(self, ai_game):
+    def __init__(self, ai_game) -> None:
         """在飞船当前位置创建一个子弹对象"""
-        super().__init__()
+        super(Bullet, self).__init__()
         self.screen = ai_game.screen
         self.settings = ai_game.settings
         self.color = self.settings.bullet_color

@@ -1,6 +1,7 @@
 import sys
 
 import pygame
+from alien import Alien
 
 from bullet import Bullet
 from settings import Settings
@@ -20,6 +21,7 @@ class AlienInvasion:
         pygame.display.set_caption(self.settings.title)
 
         self.ship = Ship(self)
+        self.alien = Alien(self)
         self.bullets = pygame.sprite.Group()
 
     def _fire_bullet(self):
@@ -78,6 +80,9 @@ class AlienInvasion:
         self.screen.fill(self.settings.bg_color)
 
         self.ship.blit_ship()
+        self.alien.blit_alien()
+
+        # 在飞船和外星人后面重绘所有子弹
         for bullet in self.bullets:
             bullet.draw_bullet()
 
