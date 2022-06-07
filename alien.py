@@ -3,12 +3,12 @@ from pygame.sprite import Sprite
 
 
 class Alien(Sprite):
+    """表示单个外星人的类"""
 
     def __init__(self, ai_game) -> None:
         """初始化外星人并设置其起始位置"""
         super(Alien, self).__init__()
         self.screen = ai_game.screen
-        self.settings = ai_game.settings
 
         # 加载外星人图像并设置其rect属性
         self.image = pygame.image.load('images/alien.bmp')
@@ -21,7 +21,3 @@ class Alien(Sprite):
         # 存储外星人的准确位置
         self.x = float(self.rect.x)
         self.y = float(self.rect.y)
-
-    def blit_alien(self):
-        """在指定位置绘制外星人"""
-        self.screen.blit(self.image, self.rect)
