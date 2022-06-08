@@ -27,16 +27,18 @@ class AlienInvasion:
 
         self._create_fleet()
 
-    def get_number_aliens_x(self, alien: Alien):
+    def get_number_aliens_x(self):
         """计算每行可容纳多少个外星人"""
+        alien = Alien(self)
         alien_width = alien.rect.width
         screen_width = self.settings.screen_width
         available_space_x = screen_width - alien_width
         # 外星人的间距为外星人宽度
         return available_space_x // (2 * alien_width)
 
-    def get_number_rows(self, alien: Alien):
+    def get_number_rows(self):
         """计算屏幕可容纳多少行外星人"""
+        alien = Alien(self)
         alien_height = alien.rect.height
         ship_height = self.ship.rect.height
         screen_height = self.settings.screen_height
@@ -55,11 +57,10 @@ class AlienInvasion:
 
     def _create_fleet(self):
         """创建外星人群"""
-        # 创建一个外星人并计算一行可容纳多少个外星人
-        alien = Alien(self)
-        number_rows = self.get_number_rows(alien)
-        number_aliens_x = self.get_number_aliens_x(alien)
+        number_rows = self.get_number_rows()
+        number_aliens_x = self.get_number_aliens_x()
 
+        # 创建外星人群
         for row_number in range(number_rows):
             for alien_number in range(number_aliens_x):
                 self._create_alien(row_number, alien_number)
@@ -70,6 +71,7 @@ class AlienInvasion:
             self.bullets.add(Bullet(self))
 
     def _check_keyup_event(self, event: Event):
+        """响应松开"""
         if event.key == pygame.K_UP:
             self.ship.moving_up = False
         elif event.key == pygame.K_DOWN:
@@ -80,6 +82,7 @@ class AlienInvasion:
             self.ship.moving_right = False
 
     def _check_keydown_event(self, event: Event):
+        """响应按键"""
         if event.key == pygame.K_q:
             pygame.quit()
             sys.exit()
@@ -115,6 +118,25 @@ class AlienInvasion:
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
 
+    def _change_fleet_direction(self):
+        """将整群外星人下移，并改变它们的方向"""
+        for alien in self.aliens:
+            alien.y += self.settings.fleet_drop_speed
+            alien.rect.y = alien.y
+        self.settings.fleet_direction *= -1
+
+    def _check_fleet_edges(self):
+        """有外星人到达边缘时采取相应措施"""
+        for alien in self.aliens:
+            if alien.check_edges():
+                self._change_fleet_direction()
+                break
+
+    def _update_aliens(self):
+        """检查是否有外星人位于屏幕边缘，并更新整群外星人的位置"""
+        self._check_fleet_edges()
+        self.aliens.update()
+
     def _update_screen(self):
         """更新屏幕上的图像，并切换到新屏幕"""
         # 每次循环时都重绘屏幕
@@ -135,6 +157,7 @@ class AlienInvasion:
             self._check_events()
             self.ship.update()
             self._update_bullets()
+            self._update_aliens()
             self._update_screen()
 
 
