@@ -1,4 +1,7 @@
 import sys
+from time import sleep
+
+from game_stats import GameStats
 
 import pygame
 from pygame.event import Event
@@ -20,6 +23,9 @@ class AlienInvasion:
         self.screen = pygame.display.set_mode(
             (self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption(self.settings.title)
+
+        # 创建一个用于存储游戏信息的实例
+        self.stats = GameStats(self)
 
         self.ship = Ship(self)
         self.aliens = pygame.sprite.Group()
@@ -67,16 +73,12 @@ class AlienInvasion:
 
     def _fire_bullet(self):
         """创建一颗子弹并将其加入编组bullets中"""
-        if len(self.bullets) < self.settings.bullet_allowed:
+        if len(self.bullets) < self.settings.bullet_limit:
             self.bullets.add(Bullet(self))
 
     def _check_keyup_event(self, event: Event):
         """响应松开"""
-        if event.key == pygame.K_UP:
-            self.ship.moving_up = False
-        elif event.key == pygame.K_DOWN:
-            self.ship.moving_down = False
-        elif event.key == pygame.K_LEFT:
+        if event.key == pygame.K_LEFT:
             self.ship.moving_left = False
         elif event.key == pygame.K_RIGHT:
             self.ship.moving_right = False
@@ -86,10 +88,6 @@ class AlienInvasion:
         if event.key == pygame.K_q:
             pygame.quit()
             sys.exit()
-        elif event.key == pygame.K_UP:
-            self.ship.moving_up = True
-        elif event.key == pygame.K_DOWN:
-            self.ship.moving_down = True
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = True
         elif event.key == pygame.K_RIGHT:
@@ -145,21 +143,43 @@ class AlienInvasion:
                 self._change_fleet_direction()
                 break
 
+    def _ship_hit(self):
+        """响应外星人被飞船撞到"""
+        # 将ship_left减1
+        self.stats.ships_left -= 1
+
+        # 清空余下的外星人和子弹
+        self.aliens.empty()
+        self.bullets.empty()
+
+        # 创建一群新的外星人，并将飞船放到屏幕底部中央
+        self._create_fleet()
+        self.ship.center_ship()
+
+        # 暂停
+        sleep(0.5)
+
     def _update_aliens(self):
         """检查是否有外星人位于屏幕边缘，并更新整群外星人的位置"""
         self._check_fleet_edges()
         self.aliens.update()
+
+        # 检测外星人和飞船之间的碰撞
+        if pygame.sprite.spritecollideany(self.ship, self.aliens):
+            self._ship_hit()
 
     def _update_screen(self):
         """更新屏幕上的图像，并切换到新屏幕"""
         # 每次循环时都重绘屏幕
         self.screen.fill(self.settings.bg_color)
 
+        # 绘制飞船和外星人
         self.ship.blit_ship()
+        self.aliens.draw(self.screen)
+
         # 在飞船和外星人后面重绘所有子弹
         for bullet in self.bullets:
             bullet.draw_bullet()
-        self.aliens.draw(self.screen)
 
         # 让最近绘制的屏幕可见
         pygame.display.flip()
