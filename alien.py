@@ -1,15 +1,18 @@
 import pygame
+from pygame import Surface
 from pygame.sprite import Sprite
+
+from settings import Settings
 
 
 class Alien(Sprite):
     """表示单个外星人的类"""
 
-    def __init__(self, ai_game) -> None:
+    def __init__(self, screen: Surface, settings: Settings) -> None:
         """初始化外星人并设置其起始位置"""
         super(Alien, self).__init__()
-        self.screen = ai_game.screen
-        self.settings = ai_game.settings
+        self.screen = screen
+        self.settings = settings
 
         # 加载外星人图像并设置其rect属性
         self.image = pygame.image.load('images/alien.bmp')

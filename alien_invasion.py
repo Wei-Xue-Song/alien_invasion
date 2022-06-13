@@ -1,13 +1,12 @@
 import sys
 from time import sleep
 
-from game_stats import GameStats
-
 import pygame
 from pygame.event import Event
 
 from alien import Alien
 from bullet import Bullet
+from game_stats import GameStats
 from settings import Settings
 from ship import Ship
 
@@ -26,26 +25,24 @@ class AlienInvasion:
         pygame.display.set_caption(self.settings.title)
 
         # 创建一个用于存储游戏信息的实例
-        self.stats = GameStats(self)
+        self.stats = GameStats(self.settings)
 
-        self.ship = Ship(self)
+        self.ship = Ship(self.screen, self.settings)
         self.aliens = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
 
         self._create_fleet()
 
-    def get_number_aliens_x(self):
+    def get_number_aliens_x(self, alien:Alien):
         """计算每行可容纳多少个外星人"""
-        alien = Alien(self)
         alien_width = alien.rect.width
         screen_width = self.settings.screen_width
         available_space_x = screen_width - alien_width
         # 外星人的间距为外星人宽度
         return available_space_x // (2 * alien_width)
 
-    def get_number_rows(self):
+    def get_number_rows(self, alien:Alien):
         """计算屏幕可容纳多少行外星人"""
-        alien = Alien(self)
         alien_height = alien.rect.height
         ship_height = self.ship.rect.height
         screen_height = self.settings.screen_height
@@ -54,7 +51,7 @@ class AlienInvasion:
 
     def _create_alien(self, row_number: int, alien_number: int):
         """创建一个外星人并将其放置在当前行"""
-        alien = Alien(self)
+        alien = Alien(self.screen, self.settings)
         alien_width, alien_height = alien.rect.size
         alien.x = alien_width + 2 * alien_width * alien_number
         alien.y = alien_height + 2 * alien_height * row_number
@@ -64,8 +61,9 @@ class AlienInvasion:
 
     def _create_fleet(self):
         """创建外星人群"""
-        number_rows = self.get_number_rows()
-        number_aliens_x = self.get_number_aliens_x()
+        alien = Alien(self.screen, self.settings)
+        number_rows = self.get_number_rows(alien)
+        number_aliens_x = self.get_number_aliens_x(alien)
 
         # 创建外星人群
         for row_number in range(number_rows):
@@ -75,7 +73,8 @@ class AlienInvasion:
     def _fire_bullet(self):
         """创建一颗子弹并将其加入编组bullets中"""
         if len(self.bullets) < self.settings.bullet_limit:
-            self.bullets.add(Bullet(self))
+            bullet = Bullet(self.screen, self.settings, self.ship)
+            self.bullets.add(bullet)
 
     def _check_keyup_event(self, event: Event):
         """响应松开"""
