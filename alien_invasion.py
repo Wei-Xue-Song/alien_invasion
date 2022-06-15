@@ -27,13 +27,13 @@ class AlienInvasion:
         # 创建一个用于存储游戏信息的实例
         self.stats = GameStats(self.settings)
 
-        self.ship = Ship(self.screen, self.settings)
         self.aliens = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
+        self.ship = Ship(self.screen, self.settings)
 
         self._create_fleet()
 
-    def get_number_aliens_x(self, alien:Alien):
+    def get_number_aliens_x(self, alien: Alien):
         """计算每行可容纳多少个外星人"""
         alien_width = alien.rect.width
         screen_width = self.settings.screen_width
@@ -41,7 +41,7 @@ class AlienInvasion:
         # 外星人的间距为外星人宽度
         return available_space_x // (2 * alien_width)
 
-    def get_number_rows(self, alien:Alien):
+    def get_number_rows(self, alien: Alien):
         """计算屏幕可容纳多少行外星人"""
         alien_height = alien.rect.height
         ship_height = self.ship.rect.height
