@@ -84,7 +84,17 @@ class AlienInvasion:
     def _check_play_button(self, mouse_pos: Tuple[int, int]) -> None:
         """在玩家单击Play按钮时开始游戏"""
         if self.play_button.rect.collidepoint(mouse_pos):
+            # 重置游戏的统计信息
+            self.stats.reset_stats()
             self.stats.game_active = True
+
+            # 清空余下的外星人和子弹
+            self.aliens.empty()
+            self.bullets.empty()
+
+            # 创建一群新的外星人并让飞船居中
+            self._create_fleet()
+            self.ship.center_ship()
 
     def _check_keyup_event(self, event: Event) -> None:
         """响应松开"""
@@ -119,16 +129,6 @@ class AlienInvasion:
                 mouse_pos = pygame.mouse.get_pos()
                 self._check_play_button(mouse_pos)
 
-    def _check_bullet_alien_collision(self) -> None:
-        """响应子弹和外星人的碰撞"""
-        # 删除发生碰撞的子弹和外星人
-        pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
-
-        if not self.aliens:
-            # 删除现有的所有子弹，并创建一个新的外星人群
-            self.bullets.empty()
-            self._create_fleet()
-
     def _update_bullets(self) -> None:
         """更新子弹的位置并删除消失的子弹"""
         # 更新子弹的位置
@@ -139,8 +139,14 @@ class AlienInvasion:
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
 
-        # 检查是否有子弹击中外星人
-        self._check_bullet_alien_collision()
+        # 删除发生碰撞的子弹和外星人
+        pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
+
+        # 如果外星人全被消灭
+        if not self.aliens:
+            # 删除现有的所有子弹，并创建一个新的外星人群
+            self.bullets.empty()
+            self._create_fleet()
 
     def _change_fleet_direction(self) -> None:
         """将整群外星人下移，并改变它们的方向"""
@@ -175,13 +181,6 @@ class AlienInvasion:
         else:
             self.stats.game_active = False
 
-    def _check_aliens_bottom(self) -> None:
-        """检查是否有外星人到达了屏幕底端"""
-        for alien in self.aliens:
-            if alien.rect.bottom >= self.screen_rect.bottom:
-                self._ship_hit()  # 像飞船被撞到一样处理
-                break
-
     def _update_aliens(self) -> None:
         """检查是否有外星人位于屏幕边缘，并更新整群外星人的位置"""
         self._check_fleet_edges()
@@ -192,7 +191,10 @@ class AlienInvasion:
             self._ship_hit()
 
         # 检查是否有外星人到达了屏幕底端
-        self._check_aliens_bottom()
+        for alien in self.aliens:
+            if alien.rect.bottom >= self.screen_rect.bottom:
+                self._ship_hit()  # 像飞船被撞到一样处理
+                break
 
     def _update_screen(self) -> None:
         """更新屏幕上的图像，并切换到新屏幕"""
