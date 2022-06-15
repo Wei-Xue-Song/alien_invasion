@@ -81,24 +81,28 @@ class AlienInvasion:
             bullet = Bullet(self.screen, self.settings, self.ship)
             self.bullets.add(bullet)
 
+    def _start_game(self):
+        """开始游戏"""
+        # 重置游戏的统计信息
+        self.stats.reset_stats()
+        self.stats.game_active = True
+
+        # 清空余下的外星人和子弹
+        self.aliens.empty()
+        self.bullets.empty()
+
+        # 创建一群新的外星人并让飞船居中
+        self._create_fleet()
+        self.ship.center_ship()
+
+        # 隐藏鼠标光标
+        pygame.mouse.set_visible(False)
+
     def _check_play_button(self, mouse_pos: Tuple[int, int]) -> None:
         """在玩家单击Play按钮时开始游戏"""
         # bugfix: 仅在game_active为False, 点击Play按钮, 游戏才重新开始
         if not self.stats.game_active and self.play_button.rect.collidepoint(mouse_pos):
-            # 重置游戏的统计信息
-            self.stats.reset_stats()
-            self.stats.game_active = True
-
-            # 清空余下的外星人和子弹
-            self.aliens.empty()
-            self.bullets.empty()
-
-            # 创建一群新的外星人并让飞船居中
-            self._create_fleet()
-            self.ship.center_ship()
-
-            # 隐藏鼠标光标
-            pygame.mouse.set_visible(False)
+            self._start_game()
 
     def _check_keyup_event(self, event: Event) -> None:
         """响应松开"""
@@ -109,14 +113,16 @@ class AlienInvasion:
 
     def _check_keydown_event(self, event: Event) -> None:
         """响应按键"""
-        if event.key == pygame.K_q:
+        if event.key == pygame.K_q:  # 按下键盘Q键退出游戏
             pygame.quit()
             sys.exit()
-        elif event.key == pygame.K_LEFT:
+        elif event.key == pygame.K_p:  # 按下键盘P键开始游戏
+            self._start_game()
+        elif event.key == pygame.K_LEFT:  # 按下键盘方向左键左移飞船
             self.ship.moving_left = True
-        elif event.key == pygame.K_RIGHT:
+        elif event.key == pygame.K_RIGHT:  # 按下键盘方向右键右移飞船
             self.ship.moving_right = True
-        elif event.key == pygame.K_SPACE:
+        elif event.key == pygame.K_SPACE:  # 按下键盘空格键飞船开火
             self._fire_bullet()
 
     def _check_events(self) -> None:
