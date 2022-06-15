@@ -83,7 +83,8 @@ class AlienInvasion:
 
     def _check_play_button(self, mouse_pos: Tuple[int, int]) -> None:
         """在玩家单击Play按钮时开始游戏"""
-        if self.play_button.rect.collidepoint(mouse_pos):
+        # bugfix: 仅在game_active为False, 点击Play按钮, 游戏才重新开始
+        if not self.stats.game_active and self.play_button.rect.collidepoint(mouse_pos):
             # 重置游戏的统计信息
             self.stats.reset_stats()
             self.stats.game_active = True
@@ -95,6 +96,9 @@ class AlienInvasion:
             # 创建一群新的外星人并让飞船居中
             self._create_fleet()
             self.ship.center_ship()
+
+            # 隐藏鼠标光标
+            pygame.mouse.set_visible(False)
 
     def _check_keyup_event(self, event: Event) -> None:
         """响应松开"""
@@ -180,6 +184,7 @@ class AlienInvasion:
             sleep(0.5)
         else:
             self.stats.game_active = False
+            pygame.mouse.set_visible(True)
 
     def _update_aliens(self) -> None:
         """检查是否有外星人位于屏幕边缘，并更新整群外星人的位置"""
