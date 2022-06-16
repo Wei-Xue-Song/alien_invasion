@@ -95,6 +95,9 @@ class AlienInvasion:
         self._create_fleet()
         self.ship.center_ship()
 
+        # 重置游戏的动态设置
+        self.settings.initialize_dynamic_settings()
+
         # 隐藏鼠标光标
         pygame.mouse.set_visible(False)
 
@@ -154,9 +157,11 @@ class AlienInvasion:
 
         # 如果外星人全被消灭
         if not self.aliens:
-            # 删除现有的所有子弹，并创建一个新的外星人群
+            # 删除现有的所有子弹, 并创建一个新的外星人群
             self.bullets.empty()
             self._create_fleet()
+            # 加快游戏节奏, 提升游戏难度
+            self.settings.increase_speed()
 
     def _change_fleet_direction(self) -> None:
         """将整群外星人下移，并改变它们的方向"""
