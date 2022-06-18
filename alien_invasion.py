@@ -92,6 +92,8 @@ class AlienInvasion:
         # 重置游戏的统计信息
         self.stats.reset_stats()
         self.stats.game_active = True
+        # bugfix: 从开始新游戏到有外星人被射杀之间显示上一次的得分
+        self.sb.prep_score()
 
         # 清空余下的外星人和子弹
         self.aliens.empty()
@@ -159,7 +161,11 @@ class AlienInvasion:
                 self.bullets.remove(bullet)
 
         # 删除发生碰撞的子弹和外星人
-        pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
+        collisions = pygame.sprite.groupcollide(self.bullets, self.aliens,
+                                                True, True)
+        if collisions:
+            self.stats.score += self.settings.alien_points
+            self.sb.prep_score()
 
         # 如果外星人全被消灭
         if not self.aliens:

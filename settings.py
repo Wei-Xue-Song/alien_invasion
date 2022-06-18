@@ -36,6 +36,9 @@ class Settings:
         # fleet_direction为1表示向右, -1表示向左
         self.fleet_direction = 1
 
+        # 玩家每击落一个外星人得到的分数
+        self.alien_points = 50
+
     def increase_speed(self):
         """提高速度设置"""
         self.ship_speed *= self.speed_scale
