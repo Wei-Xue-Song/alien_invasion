@@ -150,16 +150,8 @@ class AlienInvasion:
                 mouse_pos = pygame.mouse.get_pos()
                 self._check_play_button(mouse_pos)
 
-    def _update_bullets(self) -> None:
-        """更新子弹的位置并删除消失的子弹"""
-        # 更新子弹的位置
-        self.bullets.update()
-
-        # 删除消失的子弹
-        for bullet in self.bullets.copy():
-            if bullet.rect.bottom <= 0:
-                self.bullets.remove(bullet)
-
+    def _check_bullet_alien_collisions(self):
+        """响应子弹和外星人碰撞"""
         # 删除发生碰撞的子弹和外星人
         collisions = pygame.sprite.groupcollide(self.bullets, self.aliens,
                                                 True, True)
@@ -175,6 +167,18 @@ class AlienInvasion:
             self._create_fleet()
             # 加快游戏节奏, 提升游戏难度
             self.settings.increase_speed()
+
+    def _update_bullets(self) -> None:
+        """更新子弹的位置并删除消失的子弹"""
+        # 更新子弹的位置
+        self.bullets.update()
+
+        # 删除消失的子弹
+        for bullet in self.bullets.copy():
+            if bullet.rect.bottom <= 0:
+                self.bullets.remove(bullet)
+
+        self._check_bullet_alien_collisions()
 
     def _change_fleet_direction(self) -> None:
         """将整群外星人下移，并改变它们的方向"""

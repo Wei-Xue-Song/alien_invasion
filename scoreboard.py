@@ -23,8 +23,9 @@ class Scoreboard:
 
     def prep_score(self) -> None:
         """将得分转换为一幅渲染的图像"""
-        self.score_image = self.font.render(
-            str(self.stats.score), True, self.text_color, self.settings.bg_color)
+        # f-string采用 {content:format}设置字符串格式 :后使用,作为千位分隔符
+        self.score_image = self.font.render(f'{round(self.stats.score, -1):,}', True,
+                                            self.text_color, self.settings.bg_color)
         self.score_rect = self.score_image.get_rect()
 
         # 在屏幕右上角显示得分
