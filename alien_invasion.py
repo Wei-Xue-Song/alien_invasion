@@ -92,8 +92,10 @@ class AlienInvasion:
         # 重置游戏的统计信息
         self.stats.reset_stats()
         self.stats.game_active = True
-        # bugfix: 从开始新游戏到有外星人被射杀之间显示上一次的得分
+
+        # 重置记分牌图像
         self.sb.prep_score()
+        self.sb.prep_level()
 
         # 清空余下的外星人和子弹
         self.aliens.empty()
@@ -168,6 +170,10 @@ class AlienInvasion:
             self._create_fleet()
             # 加快游戏节奏, 提升游戏难度
             self.settings.increase_speed()
+
+            # 提高等级并更新等级图像
+            self.stats.level += 1
+            self.sb.prep_level()
 
     def _update_bullets(self) -> None:
         """更新子弹的位置并删除消失的子弹"""
