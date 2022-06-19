@@ -96,6 +96,7 @@ class AlienInvasion:
         # 重置记分牌图像
         self.sb.prep_score()
         self.sb.prep_level()
+        self.sb.prep_ships()
 
         # 清空余下的外星人和子弹
         self.aliens.empty()
@@ -204,8 +205,9 @@ class AlienInvasion:
     def _ship_hit(self) -> None:
         """响应外星人被飞船撞到"""
         if self.stats.ships_left > 0:
-            # 将ship_left减1
+            # 将ship_left减1并更新剩余飞船
             self.stats.ships_left -= 1
+            self.sb.prep_ships()
 
             # 清空余下的外星人和子弹
             self.aliens.empty()
@@ -216,7 +218,7 @@ class AlienInvasion:
             self.ship.center_ship()
 
             # 暂停
-            sleep(0.5)
+            sleep(1.5)
         else:
             self.stats.game_active = False
             pygame.mouse.set_visible(True)
@@ -249,11 +251,14 @@ class AlienInvasion:
         for bullet in self.bullets:
             bullet.draw_bullet()
 
-        # 显示得分
+        # 显示得分和等级
         self.sb.show_score()
 
-        # 如果游戏处于非活动状态，就绘制Play按钮
-        if not self.stats.game_active:
+        if self.stats.game_active:
+            # 如果游戏处于活动状态, 显示余下的飞船
+            self.sb.ships.draw(self.screen)
+        else:
+            # 如果游戏处于非活动状态, 就绘制Play按钮
             self.play_button.draw_button()
 
         # 让最近绘制的屏幕可见

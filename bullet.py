@@ -14,6 +14,7 @@ class Bullet(Sprite):
         super(Bullet, self).__init__()
         self.screen = screen
         self.settings = settings
+        self.color = self.settings.bullet_color
 
         # 在(0, 0)处创建一个表示子弹的矩形，再设置正确的位置
         self.rect = pygame.Rect(
@@ -32,5 +33,4 @@ class Bullet(Sprite):
 
     def draw_bullet(self):
         """在屏幕上绘制子弹"""
-        self.screen.fill(self.settings.bullet_color, self.rect)
-        # pygame.draw.rect(self.screen, self.color, self.rect)
+        pygame.draw.rect(self.screen, self.color, self.rect)
