@@ -159,6 +159,7 @@ class AlienInvasion:
         for _, aliens in collisions.items():
             self.stats.score += self.settings.alien_points * len(aliens)
             self.sb.prep_score()
+            self.sb.check_high_score()
 
         # 如果外星人全被消灭
         if not self.aliens:
