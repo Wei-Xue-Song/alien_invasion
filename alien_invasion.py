@@ -99,9 +99,7 @@ class AlienInvasion:
         self.stats.game_active = True
 
         # 重置记分牌图像
-        self.sb.prep_score()
-        self.sb.prep_level()
-        self.sb.prep_ships()
+        self.sb.prep_images()
 
         # 清空余下的外星人和子弹
         self.aliens.empty()
@@ -173,15 +171,20 @@ class AlienInvasion:
 
         # 如果外星人全被消灭
         if not self.aliens:
-            # 删除现有的所有子弹, 并创建一个新的外星人群
-            self.bullets.empty()
-            self._create_fleet()
-            # 加快游戏节奏, 提升游戏难度
-            self.settings.increase_speed()
+            self.start_new_level()
 
-            # 提高等级并更新等级图像
-            self.stats.level += 1
-            self.sb.prep_level()
+    def start_new_level(self):
+        """外星人群被消灭干净时开始新等级"""
+        # 删除现有的所有子弹, 并创建一个新的外星人群
+        self.bullets.empty()
+        self._create_fleet()
+
+        # 加快游戏节奏, 提升游戏难度
+        self.settings.increase_speed()
+
+        # 提高等级并更新等级图像
+        self.stats.level += 1
+        self.sb.prep_level()
 
     def _update_bullets(self) -> None:
         """更新子弹的位置并删除消失的子弹"""
