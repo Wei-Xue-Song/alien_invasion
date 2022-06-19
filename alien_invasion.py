@@ -44,6 +44,11 @@ class AlienInvasion:
         # 创建Play按钮
         self.play_button = Button(self.screen, 'Play')
 
+    def save_high_score_to_file(self):
+        """将最高分写入文件"""
+        with open(self.settings.filename, 'w') as f:
+            f.write(str(self.stats.high_score))
+
     def get_number_aliens_x(self, alien: Alien) -> int:
         """计算每行可容纳多少个外星人"""
         alien_width = alien.rect.width
@@ -128,6 +133,7 @@ class AlienInvasion:
     def _check_keydown_event(self, event: Event) -> None:
         """响应按键"""
         if event.key == pygame.K_q:  # 按下键盘Q键退出游戏
+            self.save_high_score_to_file()
             pygame.quit()
             sys.exit()
         elif event.key == pygame.K_p:  # 按下键盘P键开始游戏
@@ -143,6 +149,7 @@ class AlienInvasion:
         """响应按键和鼠标事件"""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                self.save_high_score_to_file()
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYUP:

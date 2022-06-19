@@ -26,6 +26,9 @@ class Settings:
         # 外星人分数的提高速度
         self.score_scale = 1.5
 
+        # 保存最高分的文件
+        self.filename = "high_score.txt"
+
         # 初始化随游戏进行而变化的设置
         self.initialize_dynamic_settings()
 
