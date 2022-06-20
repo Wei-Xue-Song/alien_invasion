@@ -25,14 +25,14 @@ class Ship(Sprite):
         self.moving_left = False
         self.moving_right = False
 
-    def center_ship(self):
+    def center_ship(self) -> None:
         """让飞船在屏幕底部居中"""
         # 对于每艘新飞船，都将其放在屏幕底部中央
         self.rect.midbottom = self.screen_rect.midbottom
         # 在飞船的属性x中存储小数值
         self.x = float(self.rect.x)
 
-    def update(self):
+    def update(self) -> None:
         """根据移动标志调整飞船的位置"""
         # 更新飞船而不是rect对象的x值
         if self.moving_left and self.rect.left > 0:
@@ -43,6 +43,6 @@ class Ship(Sprite):
         # 根据self.x更新rect对象
         self.rect.x = self.x
 
-    def blit_ship(self):
+    def blit_ship(self) -> None:
         """在指定位置绘制飞船"""
         self.screen.blit(self.image, self.rect)

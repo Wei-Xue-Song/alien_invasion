@@ -24,13 +24,13 @@ class Bullet(Sprite):
         # 存储用小数表示的子弹位置
         self.y = float(self.rect.y)
 
-    def update(self):
+    def update(self) -> None:
         """向上移动子弹"""
         # 更新表示子弹位置的小数值
         self.y -= self.settings.bullet_speed
         # 更新表示子弹的rect的位置
         self.rect.y = self.y
 
-    def draw_bullet(self):
+    def draw_bullet(self) -> None:
         """在屏幕上绘制子弹"""
         pygame.draw.rect(self.screen, self.color, self.rect)

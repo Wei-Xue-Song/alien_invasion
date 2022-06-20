@@ -22,7 +22,7 @@ class Scoreboard:
 
         self.prep_images()
 
-    def prep_images(self):
+    def prep_images(self) -> None:
         """准备包含当前得分、最高得分、等级和剩余飞船的图像"""
         self.prep_score()
         self.prep_high_score()

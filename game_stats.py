@@ -15,17 +15,19 @@ class GameStats:
         # 任何情况下都不应重置最高得分
         self._init_high_score()
 
-    def _init_high_score(self):
+    def _init_high_score(self) -> None:
         """初始化最高分"""
+        filename = self.settings.high_score_file
+
         try:
-            with open(self.settings.filename) as f:
+            with open(filename, 'r') as f:
                 high_score = f.read()
         except FileNotFoundError:
-            self.high_score = 0
-        else:
-            self.high_score = int(high_score)
+            high_score = 0
 
-    def reset_stats(self):
+        self.high_score = int(high_score)
+
+    def reset_stats(self) -> None:
         """"初始化游戏运行期间可能变化的统计信息"""
         self.score = 0
         self.level = 1
